@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WebsiteX5LanguagesLibrary xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<Languages>
+		<Language>
+			<Code><![CDATA[DE]]></Code>
+			<Name><![CDATA[German]]></Name>
+			<WritingDirection><![CDATA[LeftToRight]]></WritingDirection>
+			<Localizations>
+				<Localization>
+					<Key>description</Key>
+					<Value><![CDATA[Wählen Sie die Dateien im Ressourcen Ordner der WebAnimator Animation. Weitere Informationen unter http://www.webanimator.com. Hinweis: Die Audio-und Video-Dateien werden nur wenn die Website online ist, angezeigt.]]></Value>
+				</Localization>
+				<Localization>
+					<Key>files</Key>
+					<Value><![CDATA[Ressourcen Dateien]]></Value>
+				</Localization>
+				<Localization>
+					<Key>general-description</Key>
+					<Value><![CDATA[Fügen Sie eine Animation ein die mit WebAnimator erstellt wurde.]]></Value>
+				</Localization>
+				<Localization>
+					<Key>size</Key>
+					<Value><![CDATA[Grösse:]]></Value>
+				</Localization>
+			</Localizations>
+		</Language>
+		<Language>
+			<Code><![CDATA[EN]]></Code>
+			<Name><![CDATA[English]]></Name>
+			<WritingDirection><![CDATA[LeftToRight]]></WritingDirection>
+			<Localizations>
+				<Localization>
+					<Key>description</Key>
+					<Value><![CDATA[Select the files in the resources folder of the WebAnimator animation. More information at http://www.webanimator.com.
+						Note: the audio and video files will be loaded only  when the WebSite is online.]]></Value>
+				</Localization>
+				<Localization>
+					<Key>files</Key>
+					<Value><![CDATA[Resources files]]></Value>
+				</Localization>
+				<Localization>
+					<Key>general-description</Key>
+					<Value><![CDATA[Insert an animation created with WebAnimator.]]></Value>
+				</Localization>
+				<Localization>
+					<Key>size</Key>
+					<Value><![CDATA[Size:]]></Value>
+				</Localization>
+			</Localizations>
+		</Language>
+		<Language>
+			<Code><![CDATA[IT]]></Code>
+			<Name><![CDATA[Italian]]></Name>
+			<WritingDirection><![CDATA[LeftToRight]]></WritingDirection>
+			<Localizations>
+				<Localization>
+					<Key>description</Key>
+					<Value><![CDATA[Seleziona i file presenti nella cartella delle risorse dell'animazione esportata con WebAnimator. Maggiori informazioni su http://www.webanimator.com.
+						Nota: i file audio e video verranno riprodotti solo dopo che il Sito Web sarà esportato online.]]></Value>
+				</Localization>
+				<Localization>
+					<Key>files</Key>
+					<Value><![CDATA[File delle risorse]]></Value>
+				</Localization>
+				<Localization>
+					<Key>general-description</Key>
+					<Value><![CDATA[Inserisci un'animazione creata con WebAnimator.]]></Value>
+				</Localization>
+				<Localization>
+					<Key>size</Key>
+					<Value><![CDATA[Dimensioni:]]></Value>
+				</Localization>
+			</Localizations>
+		</Language>
+	</Languages>
+</WebsiteX5LanguagesLibrary>

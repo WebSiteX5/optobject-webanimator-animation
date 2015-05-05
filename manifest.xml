@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<App uuid="ec9870d3-8f25-45f0-83d7-74bfd5a6d2">
+   <Name>WebAnimator Animation</Name>
+   <Author>Incomedia</Author>
+   <Version>6</Version>
+   <Category>Widgets</Category>
+   <Description l10n-id="general-description">Insert an animation created with WebAnimator.</Description>
+   <ShowPreview>True</ShowPreview>
+   <Resources>
+      <Resource id="textualizer" src="JQ_Textualizer.js" action="copy" autolink="false" shared="true" />
+      <Resource id="jquery" src="jquery-1.7.min.js" action="copy" autolink="true" shared="true" />
+      <Resource id="modernizer" src="modernizr.custom.43133.js" action="copy" autolink="false" shared="true" />
+      <Resource id="spin" src="spin.min.js" action="copy" autolink="false" shared="true" />
+      <Resource id="wacss" src="WA.css" action="copy" autolink="false" shared="true" />
+      <Resource id="wajs" src="WA.js" action="copy" autolink="false" shared="true" />
+   </Resources>
+   <Parameters>
+      <Tab>
+         <Description l10n-id="description">Choose the files exported by WebAnimator.</Description>
+         <Fields>
+            <Field id="files" type="filelist">
+               <Label l10n-id="files">Animation files</Label>
+               <Extensions>js,css,png,gif,jpg,bmp,tiff,avi,mov,mp3,mp4,mpg</Extensions>
+               <Mandatory>true</Mandatory>
+            </Field>
+            <Field id="size" type="dimensions">
+               <Label l10n-id="size">Size:</Label>
+               <DefaultValue>800</DefaultValue>
+            </Field>
+         </Fields>
+         <ShowPreview>false</ShowPreview>
+      </Tab>
+   </Parameters>
+   <Hooks><![CDATA[
+      function OnBeforeFileElaboration(fieldId, file) {
+         var version = wsx5.version.substring( 0, wsx5.version.indexOf(".") ) * 1,
+            build = wsx5.version.substring( wsx5.version.lastIndexOf(".") + 1 ) * 1,
+            i;
+
+         // Do not proceed if the minimum version requirements are not met
+         if ( version == 11 && build < 13 ) {
+            file.preventCreation();
+            return;
+         }
+
+         // If the file is the WA_Script.js, replace the file sources and the stagename in its content
+         if ( file.name.toLowerCase().indexOf("wa_script.js") > -1 ) {
+            var resourceFolder = file.content;
+            // Detect the file resource folder
+            var index = resourceFolder.indexOf( "loadjscssfile(\"" );
+            if ( index == -1 ) {
+               console.log( "Cannot identify function loadjscssfile." );
+               return;
+            }
+            resourceFolder = resourceFolder.substring( index + "loadjscssfile(\"".length );
+            index = resourceFolder.indexOf( "/" );
+            if ( index == -1 ) {
+               console.log( "Cannot identify the resources folder name." );
+               return;
+            }
+            resourceFolder = resourceFolder.substring( 0, index );
+            
+            // Replace the shared resources folder with the correct files path
+            var content = file.content, re;
+            re = new RegExp( resourceFolder + "\\/WA.js", "g");
+            content = content.replace( re, resources["wajs"].destination );
+            re = new RegExp( resourceFolder + "\\/modernizr.custom.43133.js", "g");
+            content = content.replace( re, resources["modernizer"].destination );
+            re = new RegExp( resourceFolder + "\\/spin.min.js", "g");
+            content = content.replace( re, resources["spin"].destination );
+            re = new RegExp( resourceFolder + "\\/JQ_Textualizer.js", "g");
+            content = content.replace( re, resources["textualizer"].destination );
+            re = new RegExp( resourceFolder + "\\/WA.css", "g");
+            content = content.replace( re, resources["wacss"].destination );
+
+            // Replace the non-shared resources folder with the correct files path
+            re = new RegExp( resourceFolder + "\\/", "g" );
+            content = content.replace( re, currentObject.id + "/" );
+
+            // WSXELE-915: Look for a file name and check if it's correct basing on its new name
+            for ( i = 0; i < parameters.files.list.length; i++ ) {
+               var name = parameters.files.list[ i ].name;
+
+               // If the file contains a dash, it may have been a space so look for a file with the same 
+               // path but with spaces instead of dashes
+               if ( name.indexOf(" ") != -1 ) {
+                  // Replace the first occurrence of "-" with a space and check if it's the correct path
+                  name = name.replace( "-", " " );
+                  if ( content.indexOf(name) != -1 ) {
+                     content = content.replace( new RegExp(name, "g"), parameters.files.list[i].name.replace( /\s/g, "-") );
+                  }
+               }
+            }
+
+            // Detect the stage name used
+            index = content.indexOf( "loadResources('" );
+            if ( index == -1 ) {
+               console.log( "Cannot identify the stage name" );
+               return;
+            }
+            var stageName = content.substring( index + "loadResources('".length );
+            index = stageName.indexOf( "'" );
+            if ( index == -1 ) {
+               console.log( "Cannot identify the stage name" );
+               return;
+            }
+            stageName = stageName.substring( 0, index );
+            re = new RegExp( stageName, "g" );
+            content = content.replace( re, currentObject.id + "_stage" );
+
+            // Apply the content by passing the proper jquery var
+            file.content = "(function ( $ ) {" + content + "})( jq17 )";
+         }
+
+         // Skip the elaboration of resources that where uploaded also by the user
+         if ( file.name.toLowerCase().indexOf("jq_textualizer.js") > -1 ) {
+            file.preventCreation();
+            return;
+         }
+         if ( file.name.toLowerCase().indexOf("jquery-1.7.min.js") > -1 ) {
+            file.preventCreation();
+            return;
+         }
+         if ( file.name.toLowerCase().indexOf("modernizr.custom.43133.js") > -1 ) {
+            file.preventCreation();
+            return;
+         }
+         if ( file.name.toLowerCase().indexOf("spin.min.js") > -1 ) {
+            file.preventCreation();
+            return;
+         }
+         if ( file.name.toLowerCase().indexOf("wa.css") > -1 ) {
+            file.preventCreation();
+            return;
+         }
+         if ( file.name.toLowerCase().indexOf("wa.js") > -1 ) {
+            file.preventCreation();
+            return;
+         }
+      }
+
+      function IsEmpty() {
+         var version = wsx5.version.substring( 0, wsx5.version.indexOf(".") ) * 1,
+            build = wsx5.version.substring( wsx5.version.lastIndexOf(".") + 1 ) * 1;
+
+         // Make sure that the minimum parameters are set
+         if ( !("files" in parameters) ) {
+            return true;
+         }
+
+         // Do not proceed if the minimum version requirements are not met
+         if ( version == 11 && build < 13 || version < 11 ) {
+            return !parameters.files.list.length;
+         }
+
+         for ( var i = 0; i < parameters.files.list.length; i++ ) {
+            if ( parameters.files.list[i].name.toLowerCase().indexOf("wa_script.js") > -1 ) {
+               return false;
+            }
+         }
+         return true;
+      }
+
+      function GetHeight() {
+         return parameters.size.height;
+      }
+   ]]></Hooks>
+   <Output><![CDATA[
+      <?wsx5
+         var path = null,
+            version = wsx5.version.substring( 0, wsx5.version.indexOf(".") ) * 1,
+            build = wsx5.version.substring( wsx5.version.lastIndexOf(".") + 1 ) * 1,
+            files = parameters.files.list;
+
+         if ( version > 11 || build >= 13 ) {
+            // Detect the path of the wa_script.js file
+            for ( var i = 0; i < files.length && !path; i++ ) {
+               if ( files[i].name.toLowerCase().indexOf("wa_script.js") > -1 ) {
+                  path = files[ i ].path;
+               }
+            }
+            document.write( "<div id=\"" + currentObject.id + "_stage\" class=\"wascript\" style=\"width:" + parameters.size.width + "px; height:" + parameters.size.height + "px;\">" );
+            document.write( "<script type=\"text/javascript\" charset=\"utf-8\" src=\"" + path  + "\"></script>" );
+            document.write( "</div>" );
+         } else {
+            document.write( "You need WebSite X5 11.0.2.13 or higher to load this object." );
+         }
+      ?>
+   ]]></Output>
+</App>
